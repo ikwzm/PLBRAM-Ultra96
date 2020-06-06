@@ -1,0 +1,42 @@
+/dts-v1/; /plugin/;
+/ {
+	fragment@0 {
+		target-path = "/fpga-full";
+		__overlay__ {
+			firmware-name = "plbram_256k_dbg.bit";
+		};
+        };
+	fragment@1 {
+		target-path = "/amba_pl@0";
+		__overlay__ {
+			afi0 {
+				compatible    = "xlnx,afi-fpga";
+				config-afi    = <14 0x200>;
+			};
+			fclk0 {
+				compatible    = "ikwzm,fclkcfg-0.10.a";
+				clocks        = <&zynqmp_clk 0x47>;
+				insert-rate   = "100000000";
+				insert-enable = <1>;
+				remove-rate   = "1000000";
+				remove-enable = <0>;
+			};
+		};
+	};
+	fragment@2 {
+		target-path = "/amba_pl@0";
+		#address-cells = <2>;
+		#size-cells = <2>;
+
+		__overlay__ {
+			#address-cells = <2>;
+			#size-cells = <2>;
+
+			udmabuf_plbram {
+				compatible  = "ikwzm,u-dma-buf";
+				device-name = "udmabuf0";
+				reg = <0x04 0x00000000 0x0 0x00040000>;
+	                };
+                };
+	} ;
+} ;
