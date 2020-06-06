@@ -203,6 +203,7 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.DATA_WIDTH {128} \
    CONFIG.ECC_TYPE {0} \
+   CONFIG.SINGLE_PORT_BRAM {1} \
  ] $axi_bram_ctrl_0
 
   # Create instance: axi_gpio_0, and set properties
@@ -219,9 +220,14 @@ proc create_root_design { parentCell } {
 
   # Create instance: blk_mem_gen_0, and set properties
   set blk_mem_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 blk_mem_gen_0 ]
-
-  # Create instance: blk_mem_gen_1, and set properties
-  set blk_mem_gen_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 blk_mem_gen_1 ]
+  set_property -dict [ list \
+   CONFIG.Enable_B {Always_Enabled} \
+   CONFIG.Memory_Type {Single_Port_RAM} \
+   CONFIG.Port_B_Clock {0} \
+   CONFIG.Port_B_Enable_Rate {0} \
+   CONFIG.Port_B_Write_Rate {0} \
+   CONFIG.Use_RSTB_Pin {false} \
+ ] $blk_mem_gen_0
 
   # Create instance: proc_sys_reset_0, and set properties
   set proc_sys_reset_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_0 ]
@@ -942,7 +948,6 @@ proc create_root_design { parentCell } {
 
   # Create interface connections
   connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTA [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA] [get_bd_intf_pins blk_mem_gen_0/BRAM_PORTA]
-  connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTB [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTB] [get_bd_intf_pins blk_mem_gen_1/BRAM_PORTA]
   connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports GPIO] [get_bd_intf_pins axi_gpio_0/GPIO]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins axi_interconnect_0/M00_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_0_M01_AXI [get_bd_intf_pins axi_bram_ctrl_0/S_AXI] [get_bd_intf_pins axi_interconnect_0/M01_AXI]
@@ -963,7 +968,6 @@ proc create_root_design { parentCell } {
   # Restore current instance
   current_bd_instance $oldCurInst
 
-  validate_bd_design
   save_bd_design
 }
 # End of create_root_design()
@@ -975,4 +979,6 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
+
+common::send_msg_id "BD_TCL-1000" "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 

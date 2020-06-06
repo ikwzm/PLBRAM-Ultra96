@@ -6,7 +6,7 @@ set project_directory       [file dirname [info script]]
 set project_name            "project"
 set board_part              [get_board_parts -quiet -latest_file_version "*ultra96v2*"]
 set device_part             "xczu3eg-sbva484-1-e"
-set design_bd_tcl_file      [file join $project_directory "design_1_bd.tcl"  ]
+set design_bd_tcl_file      [file join $project_directory "design_1_dbg_bd.tcl"  ]
 lappend constrs_file_list   [file join $project_directory "design_1_pin.xdc" ]
 #
 # Create project
