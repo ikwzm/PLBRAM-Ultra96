@@ -1,13 +1,13 @@
 PLBRAM-Ultra96
 =======================================================================
 
-This Repository provides example for u-dma-buf and ZynqMP-FPGA-Linux.
+This Repository provides example for uiomem and ZynqMP-FPGA-Linux.
 
 # Requirement
 
  * Board: Ultra96
  * OS: ZynqMP-FPGA-Linux v2019.2.1 ([https://github.com/ikwzm/ZynqMP-FPGA-Linuxtree/v2019.2.1])
- * u-dma-buf v2.2.0-rc3 ([https://github.com/ikwzm/udmabuf/tree/v2.2.0-rc3])
+ * uiomem (develop) ([https://github.com/ikwzm/uiomem/tree/develop])
 
 # Boot Ultra96 and login fpga user
 
@@ -38,30 +38,32 @@ fpga@debian-fpga:~/examples$ cd PLBRAM-Ultra96
 
 # Setup
 
-## Build u-dma-buf
+## Build uiomem
 
 ```console
 fpga@debian-fpga:~/examples/PLBRAM-Ultra96$ git submodule init
-Submodule 'u-dma-buf' (https://github.com/ikwzm/udmabuf) registered for path 'u-dma-buf'
+Submodule 'uiomem' (https://github.com/ikwzm/uiomem.git) registered for path 'uiomem'
 fpga@debian-fpga:~/examples/PLBRAM-Ultra96$ git submodule update
-Cloning into '/home/fpga/examples/PLBRAM-Ultra96/u-dma-buf'...
+Cloning into '/home/fpga/examples/PLBRAM-Ultra96.tmp2/u-dma-buf'...
+Cloning into '/home/fpga/examples/PLBRAM-Ultra96.tmp2/uiomem'...
 Submodule path 'u-dma-buf': checked out '80e19cb551f6c6f611245433b346212b8e9d17cd'
-fpga@debian-fpga:~/examples/PLBRAM-Ultra96$ cd u-dma-buf
-fpga@debian-fpga:~/examples/PLBRAM-Ultra96/u-dma-buf$ make
-make -C /lib/modules/4.19.0-xlnx-v2019.2-zynqmp-fpga/build ARCH=arm64 CROSS_COMPILE= M=/home/fpga/examples/PLBRAM-Ultra96/u-dma-buf obj-m=u-dma-buf.o modules
-make[1]: Entering directory '/usr/src/linux-headers-4.19.0-xlnx-v2019.2-zynqmp-fpga'
-  CC [M]  /home/fpga/examples/PLBRAM-Ultra96/u-dma-buf/u-dma-buf.o
+Submodule path 'uiomem': checked out '52546591eb1c4d6ab0e7ce965d6e4661fdaf81e1'
+fpga@debian-fpga:~/examples/PLBRAM-Ultra96$ cd uiomem
+fpga@debian-fpga:~/examples/PLBRAM-Ultra96/uiomem$ make
+make -C /lib/modules/5.4.0-xlnx-v2020.1-zynqmp-fpga/build ARCH=arm64 CROSS_COMPILE= M=/home/fpga/examples/PLBRAM-Ultra96/uiomem obj-m=uiomem.o uiomem.ko
+make[1]: Entering directory '/usr/src/linux-headers-5.4.0-xlnx-v2020.1-zynqmp-fpga'
+  CC [M]  /home/fpga/examples/PLBRAM-Ultra96/uiomem/uiomem.o
   Building modules, stage 2.
   MODPOST 1 modules
-  CC      /home/fpga/examples/PLBRAM-Ultra96/u-dma-buf/u-dma-buf.mod.o
-  LD [M]  /home/fpga/examples/PLBRAM-Ultra96/u-dma-buf/u-dma-buf.ko
-make[1]: Leaving directory '/usr/src/linux-headers-4.19.0-xlnx-v2019.2-zynqmp-fpga'
+  CC [M]  /home/fpga/examples/PLBRAM-Ultra96/uiomem/uiomem.mod.o
+  LD [M]  /home/fpga/examples/PLBRAM-Ultra96/uiomem/uiomem.ko
+make[1]: Leaving directory '/usr/src/linux-headers-5.4.0-xlnx-v2020.1-zynqmp-fpga'
 ```
 
-## Load u-dma-buf
+## Load uiomem
 
 ```console
-fpga@debian-fpga:~/examples/PLBRAM-Ultra96/u-dma-buf$ sudo insmod u-dma-buf.ko
+fpga@debian-fpga:~/examples/PLBRAM-Ultra96/uiomem$ sudo insmod uiomem.ko
 ```
 
 ## Load FPGA and Device Tree
@@ -72,22 +74,21 @@ cp plbram_256k_dbg.bit /lib/firmware/plbram_256k_dbg.bit
 ./dtbocfg.rb --install plbram_256k --dts plbram_256k_dbg.dts
 /tmp/dtovly20200606-4045-1w0q8wf: Warning (unit_address_vs_reg): /fragment@2/__overlay__/udmabuf_plbram: node has a reg or ranges property, but no unit name
 /tmp/dtovly20200606-4045-1w0q8wf: Warning (avoid_unnecessary_addr_size): /fragment@2: unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
-[  488.106784] fpga_manager fpga0: writing plbram_256k_dbg.bit to Xilinx ZynqMP FPGA Manager
-[  488.265700] u-dma-buf udmabuf0: driver version = 2.2.0-rc3
-[  488.271274] u-dma-buf udmabuf0: major number   = 241
-[  488.276263] u-dma-buf udmabuf0: minor number   = 0
-[  488.281065] u-dma-buf udmabuf0: phys address   = 0x0000000400000000
-[  488.287333] u-dma-buf udmabuf0: buffer size    = 262144
-[  488.292566] u-dma-buf udmabuf0: dma device     = 400000000.udmabuf_plbram
-[  488.299354] u-dma-buf udmabuf0: dma coherent   = 0
-[  488.304142] u-dma-buf 400000000.udmabuf_plbram: driver installed.
-[  488.326764] fclkcfg amba_pl@0:fclk0: driver installed.
-[  488.331931] fclkcfg amba_pl@0:fclk0: device name    : amba_pl@0:fclk0
-[  488.338396] fclkcfg amba_pl@0:fclk0: clock  name    : pl0_ref
-[  488.344160] fclkcfg amba_pl@0:fclk0: clock  rate    : 99999999
-[  488.350034] fclkcfg amba_pl@0:fclk0: clock  enabled : 1
-[  488.355259] fclkcfg amba_pl@0:fclk0: remove rate    : 1000000
-[  488.365686] fclkcfg amba_pl@0:fclk0: remove enable  : 0
+[21358.448627] fpga_manager fpga0: writing plbram_256k_dbg.bit to Xilinx ZynqMP FPGA Manager
+[21358.597670] OF: overlay: WARNING: memory leak will occur if overlay removed, property: /fpga-full/firmware-name
+[21358.610363] fclkcfg amba_pl@0:fclk0: driver installed.
+[21358.615566] fclkcfg amba_pl@0:fclk0: device name    : amba_pl@0:fclk0
+[21358.622028] fclkcfg amba_pl@0:fclk0: clock  name    : pl0_ref
+[21358.627778] fclkcfg amba_pl@0:fclk0: clock  rate    : 99999999
+[21358.633628] fclkcfg amba_pl@0:fclk0: clock  enabled : 1
+[21358.638850] fclkcfg amba_pl@0:fclk0: remove rate    : 1000000
+[21358.644592] fclkcfg amba_pl@0:fclk0: remove enable  : 0
+[21358.650861] uiomem uiomem0: driver version = 0.0.1
+[21358.655663] uiomem uiomem0: major number   = 508
+[21358.660282] uiomem uiomem0: minor number   = 0
+[21358.664722] uiomem uiomem0: range address  = 0x0000000400000000
+[21358.670645] uiomem uiomem0: range size     = 262144
+[21358.675519] uiomem 400000000.uiomem_plbram: driver installed.
 ```
 
 ## Build plbram_test
