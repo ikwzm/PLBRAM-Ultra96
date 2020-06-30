@@ -1,3 +1,6 @@
 [submodule "u-dma-buf"]
 	path = u-dma-buf
 	url = https://github.com/ikwzm/udmabuf
+[submodule "uiomem"]
+	path = uiomem
+	url = https://github.com/ikwzm/uiomem.git
