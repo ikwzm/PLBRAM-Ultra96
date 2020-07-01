@@ -48,7 +48,7 @@ void udmabuf_mmap_write_test(void* buf, unsigned int size, int sync, struct time
     if (sync == 0)
         sync_len = _sys_sync_command(sync_cmd, 0, size, _SYS_DMA_TO_DEVICE);
       
-    if ((fd  = open("/dev/udmabuf0", O_RDWR | ((sync)?O_SYNC:0))) != -1) {
+    if ((fd  = open("/dev/uiomem0", O_RDWR | ((sync)?O_SYNC:0))) != -1) {
         udmabuf = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
         gettimeofday(&start_time, NULL);
         if (sync == 0)
@@ -73,7 +73,7 @@ void udmabuf_mmap_read_test(void* buf, unsigned int size, int sync, struct timev
     if (sync == 0)
         sync_len = _sys_sync_command(sync_cmd, 0, size, _SYS_DMA_FROM_DEVICE);
       
-    if ((fd  = open("/dev/udmabuf0", O_RDWR | ((sync)?O_SYNC:0))) != -1) {
+    if ((fd  = open("/dev/uiomem0", O_RDWR | ((sync)?O_SYNC:0))) != -1) {
         udmabuf = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
         gettimeofday(&start_time, NULL);
         if (sync == 0)
@@ -98,7 +98,7 @@ void main()
     void*          src1_buf = NULL;
     void*          temp_buf = NULL;
 
-    if ((fd  = open("/sys/class/u-dma-buf/udmabuf0/size"     , O_RDONLY)) != -1) {
+    if ((fd  = open("/sys/class/uiomem/uiomem0/size"     , O_RDONLY)) != -1) {
         char attr[1024];
         read(fd, attr, 1024);
         sscanf(attr, "%d", &buf_size);
@@ -106,13 +106,13 @@ void main()
     }
     printf("size=%d\n", buf_size);
 
-    if ((_sys_sync_for_cpu_file = open("/sys/class/u-dma-buf/udmabuf0/sync_for_cpu", O_RDWR)) < 0) {
-        printf("Can not open /sys/class/u-dma-buf/udmabuf0/sync_for_cpu\n");
+    if ((_sys_sync_for_cpu_file = open("/sys/class/uiomem/uiomem0/sync_for_cpu", O_RDWR)) < 0) {
+        printf("Can not open /sys/class/uiomem/uiomem0/sync_for_cpu\n");
         goto done;
     }
     
-    if ((_sys_sync_for_dev_file = open("/sys/class/u-dma-buf/udmabuf0/sync_for_device", O_RDWR)) < 0) {
-        printf("Can not open /sys/class/u-dma-buf/udmabuf0/sync_for_device\n");
+    if ((_sys_sync_for_dev_file = open("/sys/class/uiomem/uiomem0/sync_for_device", O_RDWR)) < 0) {
+        printf("Can not open /sys/class/uiomem/uiomem0/sync_for_device\n");
         goto done;
     }
 

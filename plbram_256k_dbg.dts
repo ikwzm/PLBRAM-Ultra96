@@ -32,9 +32,9 @@
 			#address-cells = <2>;
 			#size-cells = <2>;
 
-			udmabuf_plbram {
-				compatible  = "ikwzm,u-dma-buf";
-				device-name = "udmabuf0";
+			uiomem_plbram {
+				compatible  = "ikwzm,uiomem";
+				device-name = "uiomem0";
 				reg = <0x04 0x00000000 0x0 0x00040000>;
 	                };
                 };
