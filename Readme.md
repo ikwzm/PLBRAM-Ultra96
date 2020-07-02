@@ -7,7 +7,7 @@ This Repository provides example for uiomem and ZynqMP-FPGA-Linux.
 
  * Board: Ultra96
  * OS: ZynqMP-FPGA-Linux v2019.2.1 ([https://github.com/ikwzm/ZynqMP-FPGA-Linuxtree/v2019.2.1])
- * uiomem (develop) ([https://github.com/ikwzm/uiomem/tree/develop])
+ * uiomem (0.0.4) ([https://github.com/ikwzm/uiomem/tree/develop])
 
 # Boot Ultra96 and login fpga user
 
@@ -103,17 +103,29 @@ gcc  -o plbram_test plbram_test.c
 ```console
 fpga@debian-fpga:~/examples/PLBRAM-Ultra96$ ./plbram_test
 size=262144
-mmap write test(SIZE=262144, O_SYNC=1) : time = 0.000496 sec
-mmap read  test(SIZE=262144, O_SYNC=1) : time = 0.003460 sec
+mmap write test : sync=1 time=0.000530 sec (0.000530 sec)
+mmap read  test : sync=1 time=0.003468 sec (0.003468 sec)
 compare = ok
-mmap write test(SIZE=262144, O_SYNC=1) : time = 0.000492 sec
-mmap read  test(SIZE=262144, O_SYNC=0) : time = 0.000409 sec
+mmap write test : sync=0 time=0.000475 sec (0.000301 sec)
+mmap read  test : sync=1 time=0.003495 sec (0.003495 sec)
 compare = ok
-mmap write test(SIZE=262144, O_SYNC=0) : time = 0.000289 sec
-mmap read  test(SIZE=262144, O_SYNC=1) : time = 0.003468 sec
+mmap write test : sync=1 time=0.000531 sec (0.000530 sec)
+mmap read  test : sync=0 time=0.000396 sec (0.000300 sec)
 compare = ok
-mmap write test(SIZE=262144, O_SYNC=0) : time = 0.000289 sec
-mmap read  test(SIZE=262144, O_SYNC=0) : time = 0.000389 sec
+mmap write test : sync=0 time=0.000419 sec (0.000246 sec)
+mmap read  test : sync=0 time=0.000342 sec (0.000299 sec)
+compare = ok
+file write test : sync=1 time=0.000269 sec (0.000269 sec)
+mmap read  test : sync=0 time=0.000345 sec (0.000300 sec)
+compare = ok
+file write test : sync=0 time=0.000290 sec (0.000267 sec)
+mmap read  test : sync=0 time=0.000341 sec (0.000300 sec)
+compare = ok
+mmap write test : sync=0 time=0.000380 sec (0.000239 sec)
+file read  test : sync=1 time=0.000400 sec (0.000399 sec)
+compare = ok
+mmap write test : sync=0 time=0.000419 sec (0.000247 sec)
+file read  test : sync=0 time=0.000379 sec (0.000338 sec)
 compare = ok
 ```
 
