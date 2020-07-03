@@ -6,8 +6,8 @@ This Repository provides example for uiomem and ZynqMP-FPGA-Linux.
 # Requirement
 
  * Board: Ultra96
- * OS: ZynqMP-FPGA-Linux v2019.2.1 ([https://github.com/ikwzm/ZynqMP-FPGA-Linuxtree/v2019.2.1])
- * uiomem (v1.0.0-alpha.1) ([https://github.com/ikwzm/uiomem/tree/v1.0.0-alpha.1])
+ * OS: ZynqMP-FPGA-Linux v2019.2.1 https://github.com/ikwzm/ZynqMP-FPGA-Linux/tree/v2019.2.1
+ * uiomem (v1.0.0-alpha.1) https://github.com/ikwzm/uiomem/tree/v1.0.0-alpha.1
 
 # Boot Ultra96 and login fpga user
 
