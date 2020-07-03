@@ -7,7 +7,7 @@ This Repository provides example for uiomem and ZynqMP-FPGA-Linux.
 
  * Board: Ultra96
  * OS: ZynqMP-FPGA-Linux v2019.2.1 ([https://github.com/ikwzm/ZynqMP-FPGA-Linuxtree/v2019.2.1])
- * uiomem (0.0.4) ([https://github.com/ikwzm/uiomem/tree/develop])
+ * uiomem (v1.0.0-alpha.1) ([https://github.com/ikwzm/uiomem/tree/v1.0.0-alpha.1])
 
 # Boot Ultra96 and login fpga user
 
@@ -83,7 +83,7 @@ cp plbram_256k_dbg.bit /lib/firmware/plbram_256k_dbg.bit
 [21358.633628] fclkcfg amba_pl@0:fclk0: clock  enabled : 1
 [21358.638850] fclkcfg amba_pl@0:fclk0: remove rate    : 1000000
 [21358.644592] fclkcfg amba_pl@0:fclk0: remove enable  : 0
-[21358.650861] uiomem uiomem0: driver version = 0.0.1
+[21358.650861] uiomem uiomem0: driver version = 1.0.0-alpha.1
 [21358.655663] uiomem uiomem0: major number   = 508
 [21358.660282] uiomem uiomem0: minor number   = 0
 [21358.664722] uiomem uiomem0: range address  = 0x0000000400000000
