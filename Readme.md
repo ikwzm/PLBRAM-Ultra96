@@ -136,7 +136,7 @@ compare = ok
 ```console
 fpga@debian-fpga:~/examples/PLBRAM-Ultra96$ sudo rake uninstall
 ./dtbocfg.rb --remove plbram_256k
-[  766.988671] u-dma-buf 400000000.udmabuf_plbram: driver removed.
+[  766.988671] uiomem 400000000.uiomem_plbram: driver removed.
 [  766.995479] fclkcfg amba_pl@0:fclk0: driver unloaded
 ```
 
