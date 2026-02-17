@@ -1,22 +1,43 @@
+require 'yaml'
+ENV_YAML_FILE = "Rakefile.env"
+if File.exist?(ENV_YAML_FILE)
+  env = open(ENV_YAML_FILE, 'r'){ |f| YAML.load(f) }
+else
+  env = {}
+end
+if ENV.key?("TARGET")
+  env["TARGET"] = ENV["TARGET"]
+  YAML.dump(env, File.open(ENV_YAML_FILE, 'w'))
+end
+if ENV.key?("BASE_DTS")
+  env["BASE_DTS"] = ENV["BASE_DTS"]
+  YAML.dump(env, File.open(ENV_YAML_FILE, 'w'))
+end
+TARGET                 = env.fetch("TARGET"  , "plbram_256k_dbg")
+BASE_DEVICE_TREE_FILE  = env.fetch("BASE_DTS", "plbram_v1.dts")
 
 CC                     = "gcc"
 CFLAGS                 = ""
-FPGA_BITSTREAM_FILE    = "plbram_256k_dbg.bit"
-DEVICE_TREE_DIRECTORY  = "plbram_256k"
-DEVICE_TREE_FILE       = "plbram_256k_dbg.dts"
+FPGA_BITSTREAM_FILE    = TARGET + ".bit"
+DEVICE_TREE_FILE       = TARGET + ".dts"
+DEVICE_TREE_NAME       = "plbram_256k"
+DEVICE_TREE_DIRECTORY  = "/config/device-tree/overlays/" + DEVICE_TREE_NAME
 UIOMEM_DEVICE_NAME     = "uiomem0"
+DTBOCFG                = "./dtbocfg.rb"
 
-desc "Install fpga and devicetrees"
+require 'rake/clean'
+
+desc "Install fpga and devicetrees(#{DEVICE_TREE_NAME})"
 task :install => ["/lib/firmware/#{FPGA_BITSTREAM_FILE}", DEVICE_TREE_FILE] do
   begin
-    sh "./dtbocfg.rb --install #{DEVICE_TREE_DIRECTORY} --dts #{DEVICE_TREE_FILE}"
+    sh "#{DTBOCFG} --install #{DEVICE_TREE_NAME} --dts #{DEVICE_TREE_FILE}"
   rescue => e
     print "error raised:"
     p e
     abort
   end
   if (File.exist?("/dev/" + UIOMEM_DEVICE_NAME) == false)
-    abort "can not udmabuf installed."
+    abort "can not uiomem installed."
   end
   File::chmod(0666, "/dev/" + UIOMEM_DEVICE_NAME)
   File::chmod(0666, "/sys/class/uiomem/" + UIOMEM_DEVICE_NAME + "/sync_mode")
@@ -28,21 +49,32 @@ task :install => ["/lib/firmware/#{FPGA_BITSTREAM_FILE}", DEVICE_TREE_FILE] do
   File::chmod(0666, "/sys/class/uiomem/" + UIOMEM_DEVICE_NAME + "/sync_for_device")
 end
 
-desc "Uninstall fpga and devicetrees"
+desc "Uninstall fpga and devicetrees(#{DEVICE_TREE_NAME})"
 task :uninstall do
-  device_file = "/dev/" + UIOMEM_DEVICE_NAME
-  if (File.exist?(device_file) == false)
-    abort "can not #{device_file} uninstalled: does not already exists."
+  if (Dir.exist?(DEVICE_TREE_DIRECTORY) == false)
+    abort "can not #{DEVICE_TREE_DIRECTORY} uninstalled: does not already exists."
   end
-  sh "./dtbocfg.rb --remove #{DEVICE_TREE_DIRECTORY}"
+  sh "#{DTBOCFG} --remove #{DEVICE_TREE_NAME}"
 end
 
 file "/lib/firmware/#{FPGA_BITSTREAM_FILE}" => ["#{FPGA_BITSTREAM_FILE}"] do
   sh "cp #{FPGA_BITSTREAM_FILE} /lib/firmware/#{FPGA_BITSTREAM_FILE}"
 end
+CLOBBER.include("/lib/firmware/" + FPGA_BITSTREAM_FILE)
 
-file "/dev/#{UIOMEM_DEVICE_NAME}" do
+directory DEVICE_TREE_DIRECTORY do
   Rake::Task["install"].invoke
+end
+
+file DEVICE_TREE_FILE => [ BASE_DEVICE_TREE_FILE ] do
+  File.open(DEVICE_TREE_FILE, "w") do |o_file|
+    File.open(BASE_DEVICE_TREE_FILE) do |i_file|
+      i_file.each_line do |line|
+        line = line.gsub(/(^\s*firmware-name\s*=\s*)(.*);/){"#{$1}\"#{FPGA_BITSTREAM_FILE}\";"}
+        o_file.puts(line)
+      end
+    end
+  end
 end
 
 file "plbram_test"    => ["plbram_test.c"] do
