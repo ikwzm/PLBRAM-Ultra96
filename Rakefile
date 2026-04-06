@@ -19,6 +19,7 @@ BASE_DEVICE_TREE_FILE  = env.fetch("BASE_DTS", "plbram_v1.dts")
 CC                     = "gcc"
 CFLAGS                 = ""
 FPGA_BITSTREAM_FILE    = TARGET + ".bit"
+FPGA_BITSTREAM_GZ_FILE = FPGA_BITSTREAM_FILE + ".gz"
 DEVICE_TREE_FILE       = TARGET + ".dts"
 DEVICE_TREE_NAME       = "plbram_256k"
 DEVICE_TREE_DIRECTORY  = "/config/device-tree/overlays/" + DEVICE_TREE_NAME
@@ -57,8 +58,8 @@ task :uninstall do
   sh "#{DTBOCFG} --remove #{DEVICE_TREE_NAME}"
 end
 
-file "/lib/firmware/#{FPGA_BITSTREAM_FILE}" => ["#{FPGA_BITSTREAM_FILE}"] do
-  sh "cp #{FPGA_BITSTREAM_FILE} /lib/firmware/#{FPGA_BITSTREAM_FILE}"
+file "/lib/firmware/" + FPGA_BITSTREAM_FILE => [ FPGA_BITSTREAM_GZ_FILE ] do
+  sh "gzip -d -f -c #{FPGA_BITSTREAM_GZ_FILE} > /lib/firmware/#{FPGA_BITSTREAM_FILE}"
 end
 CLOBBER.include("/lib/firmware/" + FPGA_BITSTREAM_FILE)
 
