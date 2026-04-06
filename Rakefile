@@ -23,7 +23,7 @@ DEVICE_TREE_FILE       = TARGET + ".dts"
 DEVICE_TREE_NAME       = "plbram_256k"
 DEVICE_TREE_DIRECTORY  = "/config/device-tree/overlays/" + DEVICE_TREE_NAME
 UIOMEM_DEVICE_NAME     = "uiomem0"
-DTBOCFG                = "./dtbocfg.rb"
+DTBOCFG                = "./dtbo-config"
 
 require 'rake/clean'
 
