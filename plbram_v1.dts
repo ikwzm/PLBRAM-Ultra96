@@ -3,7 +3,7 @@
 	fragment@0 {
 		target = <&fpga_full>;
 		__overlay__ {
-			firmware-name = "plbram_256k_dbg.bit";
+			firmware-name = "plbram_256k_dbg.bin";
 		};
         };
 	fragment@1 {
