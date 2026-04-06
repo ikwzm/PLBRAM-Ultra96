@@ -14,7 +14,7 @@ if ENV.key?("BASE_DTS")
   YAML.dump(env, File.open(ENV_YAML_FILE, 'w'))
 end
 TARGET                 = env.fetch("TARGET"  , "plbram_256k_dbg")
-BASE_DEVICE_TREE_FILE  = env.fetch("BASE_DTS", "plbram_v1.dts")
+BASE_DEVICE_TREE_FILE  = env.fetch("BASE_DTS", "plbram_v2.dts")
 
 CC                     = "gcc"
 CFLAGS                 = ""
