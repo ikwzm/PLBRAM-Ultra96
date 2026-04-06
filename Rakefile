@@ -18,7 +18,7 @@ BASE_DEVICE_TREE_FILE  = env.fetch("BASE_DTS", "plbram_v2.dts")
 
 CC                     = "gcc"
 CFLAGS                 = ""
-FPGA_BITSTREAM_FILE    = TARGET + ".bit"
+FPGA_BITSTREAM_FILE    = TARGET + ".bin"
 FPGA_BITSTREAM_GZ_FILE = FPGA_BITSTREAM_FILE + ".gz"
 DEVICE_TREE_FILE       = TARGET + ".dts"
 DEVICE_TREE_NAME       = "plbram_256k"
